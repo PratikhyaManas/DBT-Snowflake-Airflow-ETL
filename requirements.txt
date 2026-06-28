@@ -1,0 +1,6 @@
+dbt-core
+dbt-snowflake
+great-expectations
+apache-airflow
+mkdocs
+mkdocs-material

@@ -1,0 +1,10 @@
+# Great Expectations configuration
+config_version: 3.0
+datasources:
+  snowflake_datasource:
+    class_name: SqlAlchemyDatasource
+    credentials:
+      drivername: snowflake
+      # credentials will be injected via env vars
+expectations:
+  - expectation_suite_name: orders_suite

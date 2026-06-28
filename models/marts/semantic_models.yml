@@ -1,0 +1,11 @@
+version: 2
+semantic_models:
+  - name: sales_metrics
+    model: ref('fct_sales')
+    measures:
+      - name: total_revenue
+        agg: sum
+        expr: line_total
+    dimensions:
+      - name: order_date
+        type: date

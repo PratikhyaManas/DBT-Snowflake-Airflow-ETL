@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw_ecommerce
+    database: your_database
+    schema: raw
+    tables:
+      - name: orders
+        columns:
+          - name: order_id
+            tests:
+              - unique
+              - not_null
+      - name: order_items
+        columns:
+          - name: order_id
+            tests:
+              - relationships:
+                  to: source('raw_ecommerce', 'orders')
+                  field: order_id
