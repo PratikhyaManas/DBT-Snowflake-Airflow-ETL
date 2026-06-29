@@ -1,3 +1,12 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='order_key',
+        incremental_strategy='merge',
+        on_schema_change='sync_all_columns'
+    )
+}}
+
 select
     orders.order_key,
     orders.customer_key,
@@ -10,3 +19,7 @@ select
 from {{ ref('stg_orders') }} as orders
 join {{ ref('int_order_items_summary') }} as item_summary
     on orders.order_key = item_summary.order_key
+
+{% if is_incremental() %}
+where orders.order_date > (select coalesce(max(order_date), '1900-01-01'::date) from {{ this }})
+{% endif %}

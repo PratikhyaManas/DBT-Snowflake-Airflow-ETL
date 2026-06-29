@@ -4,14 +4,25 @@ sources:
   - name: tpch
     database: snowflake_sample_data
     schema: tpch_sf1
+    loaded_at_field: o_orderdate
+    freshness:
+      warn_after: {count: 36, period: hour}
+      error_after: {count: 72, period: hour}
     tables:
       - name: orders
+        freshness:
+          warn_after: {count: 24, period: hour}
+          error_after: {count: 48, period: hour}
         columns:
           - name: o_orderkey
             tests:
               - unique
               - not_null
       - name: lineitem
+        loaded_at_field: l_shipdate
+        freshness:
+          warn_after: {count: 24, period: hour}
+          error_after: {count: 48, period: hour}
         columns:
           - name: l_orderkey
             tests:

@@ -1,0 +1,120 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Staging model for TPCH orders source with standardized column names and types."
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_key
+        description: "Unique order identifier from TPCH orders source."
+        data_type: NUMBER
+        constraints:
+          - type: not_null
+        tests:
+          - unique
+          - not_null
+      - name: customer_key
+        description: "Customer identifier associated with each order."
+        data_type: NUMBER
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+      - name: status_code
+        description: "Order status code from source."
+        data_type: VARCHAR
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['F', 'O', 'P']
+      - name: total_price
+        description: "Total price recorded for the order."
+        data_type: NUMBER
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: order_date
+        description: "Order date in source system."
+        data_type: DATE
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+
+  - name: stg_order_items
+    description: "Staging model for TPCH line items with standardized and typed columns."
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_item_key
+        description: "Surrogate key generated from order_key and line_number."
+        data_type: VARCHAR
+        constraints:
+          - type: not_null
+        tests:
+          - unique
+          - not_null
+      - name: order_key
+        description: "Parent order identifier for each line item."
+        data_type: NUMBER
+        constraints:
+          - type: not_null
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_key
+      - name: part_key
+        description: "Part identifier for the line item."
+        data_type: NUMBER
+        tests:
+          - not_null
+      - name: line_number
+        description: "Line item number within an order."
+        data_type: NUMBER
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true
+      - name: quantity
+        description: "Quantity ordered for this line item."
+        data_type: NUMBER
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: extended_price
+        description: "Extended price before discounts and tax."
+        data_type: NUMBER
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: discount
+        description: "Discount percentage for line item, expected between 0 and 1."
+        data_type: FLOAT
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
+      - name: tax_rate
+        description: "Tax rate applied to line item, expected between 0 and 1."
+        data_type: FLOAT
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true

@@ -76,6 +76,18 @@ dbt deps
 dbt build
 ```
 
+Run source freshness checks:
+
+```bash
+dbt source freshness
+```
+
+`fct_sales` is configured as an incremental model (merge strategy). Use a full refresh when needed:
+
+```bash
+dbt run --select fct_sales --full-refresh
+```
+
 ## Airflow + Cosmos Orchestration
 
 The DAG in `dags/ecommerce_dag.py` creates a native model-aware dbt DAG.
@@ -91,6 +103,10 @@ Run in Airflow:
 2. Start scheduler/webserver
 3. Trigger DAG: `ecommerce_dbt_pipeline`
 
+Optional alerting:
+
+- Set env var `AIRFLOW_ALERT_WEBHOOK_URL` in Airflow to receive DAG failure alerts (Slack/Teams compatible webhook).
+
 ## Data Quality
 
 This project uses:
@@ -98,6 +114,29 @@ This project uses:
 - dbt generic tests in `models/marts/generic_tests.yml`
 - dbt singular test in `tests/fct_sales_discount.sql`
 - Great Expectations suite in `great_expectations/expectations/orders_suite.json`
+
+Data contracts and stronger schema tests are enabled for `fct_sales`:
+
+- model contract enforcement (`contract.enforced: true`)
+- explicit column data types and not-null constraints
+- domain/value checks (`accepted_values`, `accepted_range`)
+- business-rule assertion for net sales formula
+
+Equivalent staging contracts/tests are enabled for:
+
+- `stg_orders`
+- `stg_order_items`
+
+Staging contract/test definitions are in `models/staging/staging_tests.yml`.
+
+Run contract-aware validation:
+
+```bash
+dbt build --select stg_orders stg_order_items
+dbt build --select fct_sales
+dbt test --select stg_orders stg_order_items
+dbt test --select fct_sales
+```
 
 ## CI/CD
 
