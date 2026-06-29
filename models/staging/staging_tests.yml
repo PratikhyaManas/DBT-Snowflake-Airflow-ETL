@@ -30,15 +30,17 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['F', 'O', 'P']
+              arguments:
+                values: ['F', 'O', 'P']
       - name: total_price
         description: "Total price recorded for the order."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
+              arguments:
+                min_value: 0
+                inclusive: true
       - name: order_date
         description: "Order date in source system."
         data_type: DATE
@@ -69,8 +71,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_orders')
-              field: order_key
+              arguments:
+                to: ref('stg_orders')
+                field: order_key
       - name: part_key
         description: "Part identifier for the line item."
         data_type: NUMBER
@@ -82,39 +85,44 @@ models:
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 1
-              inclusive: true
+              arguments:
+                min_value: 1
+                inclusive: true
       - name: quantity
         description: "Quantity ordered for this line item."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: false
+              arguments:
+                min_value: 0
+                inclusive: false
       - name: extended_price
         description: "Extended price before discounts and tax."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
+              arguments:
+                min_value: 0
+                inclusive: true
       - name: discount
         description: "Discount percentage for line item, expected between 0 and 1."
         data_type: FLOAT
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1
-              inclusive: true
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
       - name: tax_rate
         description: "Tax rate applied to line item, expected between 0 and 1."
         data_type: FLOAT
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1
-              inclusive: true
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true

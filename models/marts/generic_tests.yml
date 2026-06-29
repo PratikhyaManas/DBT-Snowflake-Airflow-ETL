@@ -16,8 +16,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('stg_orders')
-              field: order_key
+              arguments:
+                to: ref('stg_orders')
+                field: order_key
       - name: customer_key
         description: "Customer identifier associated with the order."
         data_type: NUMBER
@@ -40,35 +41,40 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['F', 'O', 'P']
+              arguments:
+                values: ['F', 'O', 'P']
       - name: total_price
         description: "Original order total amount from source orders table."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
+              arguments:
+                min_value: 0
+                inclusive: true
       - name: gross_item_sales_amount
         description: "Sum of line-item extended price before discount."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
+              arguments:
+                min_value: 0
+                inclusive: true
       - name: item_discount_amount
         description: "Discount amount represented as non-positive value."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              max_value: 0
-              inclusive: true
+              arguments:
+                max_value: 0
+                inclusive: true
       - name: net_item_sales_amount
         description: "Gross sales amount plus discount amount."
         data_type: NUMBER
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "gross_item_sales_amount + item_discount_amount = net_item_sales_amount"
+              arguments:
+                expression: "gross_item_sales_amount + item_discount_amount = net_item_sales_amount"

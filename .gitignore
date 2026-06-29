@@ -23,6 +23,11 @@ airflow-webserver.pid
 .env.*
 !.env.example
 
+# Local dbt profile (contains credentials)
+profiles.yml
+!profiles.example.yml
+
 # OS/editor noise
 .DS_Store
 Thumbs.db
+dbt_internal_packages/
