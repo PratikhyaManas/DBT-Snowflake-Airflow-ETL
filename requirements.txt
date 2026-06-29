@@ -1,6 +1,7 @@
-dbt-core
-dbt-snowflake
-great-expectations
-apache-airflow
-mkdocs
-mkdocs-material
+dbt-core>=1.8,<2.0
+dbt-snowflake>=1.8,<2.0
+astronomer-cosmos>=1.8,<2.0
+snowflake-sqlalchemy>=1.6,<2.0
+great-expectations>=1.2,<2.0
+mkdocs>=1.6,<2.0
+mkdocs-material>=9.5,<10.0

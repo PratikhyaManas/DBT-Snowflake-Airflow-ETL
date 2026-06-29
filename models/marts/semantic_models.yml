@@ -5,7 +5,7 @@ semantic_models:
     measures:
       - name: total_revenue
         agg: sum
-        expr: line_total
+        expr: net_item_sales_amount
     dimensions:
       - name: order_date
         type: date

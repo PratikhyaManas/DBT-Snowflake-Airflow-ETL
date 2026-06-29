@@ -1,20 +1,20 @@
 version: 2
 
 sources:
-  - name: raw_ecommerce
-    database: your_database
-    schema: raw
+  - name: tpch
+    database: snowflake_sample_data
+    schema: tpch_sf1
     tables:
       - name: orders
         columns:
-          - name: order_id
+          - name: o_orderkey
             tests:
               - unique
               - not_null
-      - name: order_items
+      - name: lineitem
         columns:
-          - name: order_id
+          - name: l_orderkey
             tests:
               - relationships:
-                  to: source('raw_ecommerce', 'orders')
-                  field: order_id
+                  to: source('tpch', 'orders')
+                  field: o_orderkey

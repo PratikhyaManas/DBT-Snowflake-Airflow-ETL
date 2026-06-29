@@ -11,3 +11,11 @@ create role if not exists dbt_role;
 grant role dbt_role to user YOUR_USER;
 grant usage on warehouse dbt_wh to role dbt_role;
 grant all on database ecommerce_db to role dbt_role;
+grant usage on schema ecommerce_db.raw to role dbt_role;
+grant usage on schema ecommerce_db.analytics to role dbt_role;
+grant create table, create view on schema ecommerce_db.analytics to role dbt_role;
+
+use role dbt_role;
+use warehouse dbt_wh;
+use database ecommerce_db;
+use schema analytics;

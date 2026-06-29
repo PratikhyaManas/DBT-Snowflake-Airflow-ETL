@@ -1,13 +1,12 @@
--- Fact table for sales analytics
 select
-    o.order_id,
-    o.customer_id,
-    o.order_date,
-    oi.product_id,
-    oi.quantity,
-    oi.unit_price,
-    (oi.quantity * oi.unit_price) as line_total,
-    o.status
-from {{ ref('stg_orders') }} o
-join {{ ref('stg_order_items') }} oi
-    on o.order_id = oi.order_id
+    orders.order_key,
+    orders.customer_key,
+    orders.order_date,
+    orders.status_code,
+    orders.total_price,
+    item_summary.gross_item_sales_amount,
+    item_summary.item_discount_amount,
+    (item_summary.gross_item_sales_amount + item_summary.item_discount_amount) as net_item_sales_amount
+from {{ ref('stg_orders') }} as orders
+join {{ ref('int_order_items_summary') }} as item_summary
+    on orders.order_key = item_summary.order_key
